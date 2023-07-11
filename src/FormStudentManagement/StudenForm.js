@@ -29,6 +29,7 @@ class StudentFrom extends Component {
     isDisabledMaSV: false,
   };
 
+  // thay đổi value trong state khi nhập vào input
   handleOnchange = (e) => {
     const { name, value } = e.target;
 
@@ -40,6 +41,7 @@ class StudentFrom extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
+    // nếu props studentEdit khác null thì cập nhật, ngược lại thì thêm
     if (this.props.studentEdit) {
       if (window.confirm("Bạn có chắc muốn cập nhật sinh viên này?")) {
         this.props.updateStudent(this.state.values);
@@ -47,13 +49,23 @@ class StudentFrom extends Component {
     } else {
       if (window.confirm("Bạn có chắc muốn thêm sinh viên này?")) {
         this.props.addStudent(this.state.values);
+        this.setState({
+          values: {
+            maSV: "",
+            hoTen: "",
+            phone: "",
+            email: "",
+          },
+        });
       }
     }
   };
 
   handleOnBlur = (e) => {
+    // validation các input
     const { name, value } = e.target;
 
+    // check rỗng
     let mess = value.trim() ? "" : `${name} không được bỏ trống!`;
 
     let { valMaSV, valHoTen, valPhone, valEmail } = this.state;
@@ -61,6 +73,8 @@ class StudentFrom extends Component {
     switch (name) {
       case "maSV":
         valMaSV = mess === "" ? true : false;
+
+        // check số ký tự mã SV
         if (value && value.trim().length > 4) {
           mess = "Mã SV từ 4 ký tự trở xuống";
           valMaSV = false;
@@ -69,6 +83,8 @@ class StudentFrom extends Component {
 
       case "hoTen":
         valHoTen = mess === "" ? true : false;
+
+        // check tên
         if (value && !value.match(/^[\p{L}\s'-]+$/u)) {
           mess = "Họ tên phải là chữ";
           valHoTen = false;
@@ -77,6 +93,8 @@ class StudentFrom extends Component {
 
       case "phone":
         valPhone = mess === "" ? true : false;
+
+        // check số ký tự số điện thoại
         if (value && !value.match(/^\d{10}$/)) {
           mess = "Phone phải có 10 chữ số";
           valPhone = false;
@@ -85,6 +103,8 @@ class StudentFrom extends Component {
 
       case "email":
         valEmail = mess === "" ? true : false;
+
+        // check định dạng email
         if (
           value &&
           !value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
@@ -98,6 +118,7 @@ class StudentFrom extends Component {
         break;
     }
 
+    // cập nhật state
     this.setState({
       errors: { ...this.state.errors, [name]: mess },
       valMaSV,
@@ -108,7 +129,9 @@ class StudentFrom extends Component {
     });
   };
 
+  // khi nhận props thì thực hiện
   UNSAFE_componentWillReceiveProps = (nextProps) => {
+    // props studentEdit có giá trị thì cập nhật state để hiện thị ra form
     if (nextProps && nextProps.studentEdit) {
       this.setState({
         values: {
@@ -118,15 +141,18 @@ class StudentFrom extends Component {
           email: nextProps.studentEdit.email,
         },
 
+        // khi cập nhật thì mặc định các valid sẽ true hết, khi người dùng chỉnh sửa sẽ validate lại
         valMaSV: true,
         valHoTen: true,
         valPhone: true,
         valEmail: true,
         valForm: true,
 
+        // disabled input nhập mã SV khi cập nhật
         isDisabledMaSV: true,
       });
     } else {
+      // nếu props studentEdit rỗng thì cập nhật lại state
       this.setState({
         values: {
           maSV: "",
@@ -146,7 +172,9 @@ class StudentFrom extends Component {
     }
   };
 
+  // render các button "Thêm, cập nhật, hủy"
   renderButton = () => {
+    // nếu props studentEdit có giá trị thì render 2 button "Cập nhật" và "Hủy cập nhật"
     if (this.props.studentEdit) {
       return (
         <>
@@ -168,6 +196,7 @@ class StudentFrom extends Component {
         </>
       );
     } else {
+      // nếu không thì render button "Thêm"
       return (
         <button
           type="submit"

@@ -9,7 +9,7 @@ class Search extends Component {
         <div className="input-group mt-3">
           <div className="input-group-prepend">
             <span className="input-group-text">
-              <i class="fa fa-search"></i>
+              <i className="fa fa-search"></i>
             </span>
           </div>
           <input

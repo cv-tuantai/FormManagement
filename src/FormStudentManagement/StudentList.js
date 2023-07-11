@@ -5,13 +5,16 @@ import { actEditStudent } from "../store/action";
 
 class StudentList extends Component {
   renderList = () => {
+    // bóc tách từ props
     let { studentArr, keyword } = this.props;
 
+    // filter
     studentArr = studentArr.filter(
       (student) =>
         student.hoTen.toLowerCase().indexOf(keyword.toLowerCase()) !== -1,
     );
 
+    // nếu studentArr tồn tại (không phải null hoặc undefined) thì dùng map để render ra list student
     return studentArr?.map((student) => {
       return (
         <tr key={student.maSV}>
